@@ -22,15 +22,33 @@ typedef int (*Comparer) (const void *a, const void *b);
  * - Process ids will be unique
  * - No 2 processes will have same arrival time
  */
-int my_comparer(const void *this, const void *that)
+int my_comparer_priority(const void *this, const void *that)
 {
 	//TODO: IMPLEMENT ME!
-	return 0;
+  int first_int = *(((int*)this + 2) );
+  
+  int second_int = *(((int*)that + 2) );
+  
+	return (second_int - first_int);
 }
 
-int main(int argc, char *argv[])
-{
 
+
+int my_comparer_arrival(const void *this, const void *that) {
+	int first_int = *(((int*)this + 1) );
+  
+	int second_int = *(((int*)that + 1) );
+  
+	return (first_int - second_int);
+}
+
+
+int main(int argc, char *argv[]){
+
+  int count;
+  int x;
+  for (x =0 ;x<2; x++){
+  
 	if (argc < 2) {
 		   fprintf(stderr, "Usage: ./func-ptr <input-file-path>\n");
 		   fflush(stdout);
@@ -52,8 +70,23 @@ int main(int argc, char *argv[])
 	/*******************/
 	/* sort the input  */
 	/*******************/
-	Comparer process_comparer = &my_comparer;
+	Comparer process_comparer;
+    
 
+    
+ if (count == 0) {
+			printf("\nSorted by Priority\n");
+			process_comparer = &my_comparer_priority;
+		
+ } else {
+   
+			printf("\nSorted by Arrival Time\n");
+   
+			process_comparer = &my_comparer_arrival;
+		}
+    
+    
+    
 #if DEBUG
 	for (int i = 0; i < P_SIZE; i++) {
 		    printf("%d (%d, %d) ",
@@ -82,5 +115,8 @@ int main(int argc, char *argv[])
 	/************/
 	free(processes);
 	fclose(input_file);
+    count++;
+  }
 	return 0;
+
 }
